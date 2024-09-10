@@ -1,16 +1,19 @@
-name: Continuous Integration
-on: [push]
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.10.0
-          architecture: x64
-      - name: Install dependencies
-        run: pip install -r requirements.txt 
-      - name: Run Tests
-        run: python -m pytest
+name: Unit Tests
+runs-on: ubuntu-latest
+defaults:
+  run:
+    shell: bash
+    working-directory: app
+steps:
+  - uses: actions/checkout@v3
+  - name: Install poetry
+    run: pipx install poetry
+  - uses: actions/setup-python@v3
+    with:
+      python-version: "3.10"
+      cache: "poetry"
+  - run: poetry install
+  - name: Run tests
+    run: |
+      make mypy
+      make test
